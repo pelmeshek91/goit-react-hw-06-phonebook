@@ -3,7 +3,6 @@ import { useState } from 'react';
 import s from './Form.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { actions } from 'redux/contactsSlice';
-import { nanoid } from 'nanoid';
 
 const initialState = { name: '', number: '' };
 
