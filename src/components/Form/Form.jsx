@@ -1,14 +1,16 @@
 import { useState } from 'react';
 
 import s from './Form.module.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { actions } from 'redux/contactsSlice';
+import { nanoid } from 'nanoid';
 
 const initialState = { name: '', number: '' };
 
 export const Form = () => {
   const [form, setForm] = useState(initialState);
   const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts.contacts);
 
   const handleChange = ({ target: { name, value } }) => {
     setForm(prevForm => {
@@ -18,7 +20,11 @@ export const Form = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    dispatch(actions.addContact(form));
+    contacts.some(
+      contact => contact.name.toLowerCase() === form.name.toLowerCase()
+    )
+      ? alert(`${form.name} is already in contacts!`)
+      : dispatch(actions.addContact(form));
     setForm(initialState);
   };
 
