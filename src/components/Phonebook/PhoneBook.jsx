@@ -1,10 +1,23 @@
 import s from './Phonebook.module.css';
-import PropTypes from 'prop-types';
+import { useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { actions } from 'redux/contactsSlice';
 
-export const PhoneBook = ({ contactsList, deleteContact }) => {
+export const PhoneBook = () => {
+  const contacts = useSelector(state => state.contacts.contacts);
+  const filter = useSelector(state => state.contacts.filter);
+  const dispatch = useDispatch();
+
+  const filterContactsList = useMemo(() => {
+    if (filter === '') return contacts;
+    return contacts?.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+  }, [filter, contacts]);
+
   return (
     <ul className={s.contactsList}>
-      {contactsList.map(({ name, number, id }) => {
+      {filterContactsList?.map(({ name, number, id }) => {
         return (
           <li className={s.contactsItem} key={id}>
             <p>
@@ -13,7 +26,7 @@ export const PhoneBook = ({ contactsList, deleteContact }) => {
             <button
               type="button"
               onClick={() => {
-                deleteContact(id);
+                dispatch(actions.removeContact(id));
               }}
             >
               Delete
@@ -23,9 +36,4 @@ export const PhoneBook = ({ contactsList, deleteContact }) => {
       })}
     </ul>
   );
-};
-
-PhoneBook.propTypes = {
-  contactsList: PropTypes.array.isRequired,
-  deleteContact: PropTypes.func.isRequired,
 };
